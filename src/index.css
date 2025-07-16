@@ -8,35 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 214 84% 56%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 214 100% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 215 20% 96%;
+    --secondary-foreground: 215 25% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 20% 96%;
+    --muted-foreground: 215 15% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 93% 47%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 215 20% 90%;
+    --input: 215 20% 90%;
+    --ring: 214 84% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Security company specific design tokens */
+    --security-blue: 214 84% 56%;
+    --security-blue-dark: 214 84% 46%;
+    --security-blue-light: 214 84% 66%;
+    --trust-green: 142 76% 36%;
+    --warning-orange: 25 95% 53%;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--security-blue)), hsl(var(--security-blue-dark)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(215 20% 99%));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(45 93% 57%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(215 25% 15% / 0.1), 0 2px 4px -1px hsl(215 25% 15% / 0.06);
+    --shadow-hero: 0 20px 25px -5px hsl(var(--security-blue) / 0.3);
+    --shadow-button: 0 4px 14px 0 hsl(var(--security-blue) / 0.25);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
