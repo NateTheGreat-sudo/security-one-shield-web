@@ -1,8 +1,54 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const contactSchema = z.object({
+  firstName: z.string()
+    .min(1, "First name is required")
+    .min(2, "First name must be at least 2 characters")
+    .regex(/^[A-Z][a-zA-Z]*$/, "First name must start with capital letter and contain no numbers")
+    .refine((val) => !val.endsWith(' '), "First name cannot end with a space"),
+  lastName: z.string()
+    .min(1, "Last name is required")
+    .min(2, "Last name must be at least 2 characters")
+    .regex(/^[A-Z][a-zA-Z]*$/, "Last name must start with capital letter and contain no numbers")
+    .refine((val) => !val.endsWith(' '), "Last name cannot end with a space"),
+  phone: z.string()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+  email: z.string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  address: z.string()
+    .min(1, "Property address is required")
+    .regex(/\d{5}/, "Address must include a valid ZIP code"),
+  message: z.string()
+    .max(500, "Message cannot exceed 500 characters")
+    .optional()
+});
 
 export const Contact = () => {
+  const form = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      address: "",
+      message: "",
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof contactSchema>) => {
+    console.log("Contact form submitted:", data);
+    // Handle form submission
+  };
+
   return (
     <section id="contact" className="py-20 bg-gradient-hero">
       <div className="container mx-auto px-4 lg:px-8">
@@ -20,64 +66,139 @@ export const Contact = () => {
             <CardHeader>
               <CardTitle className="text-2xl text-center">Get Your Free Quote</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">First Name</label>
-                  <input 
-                    type="text" 
-                    className="w-full p-3 border border-border rounded-lg bg-background"
-                    placeholder="John"
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-card-foreground">First Name</FormLabel>
+                          <FormControl>
+                            <input 
+                              {...field}
+                              type="text" 
+                              className="w-full p-3 border border-border rounded-lg bg-background"
+                              placeholder="John"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-card-foreground">Last Name</FormLabel>
+                          <FormControl>
+                            <input 
+                              {...field}
+                              type="text" 
+                              className="w-full p-3 border border-border rounded-lg bg-background"
+                              placeholder="Smith"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-card-foreground">Phone Number</FormLabel>
+                        <FormControl>
+                          <input 
+                            {...field}
+                            type="tel" 
+                            className="w-full p-3 border border-border rounded-lg bg-background"
+                            placeholder="5551234567"
+                            maxLength={10}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              field.onChange(value);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">Last Name</label>
-                  <input 
-                    type="text" 
-                    className="w-full p-3 border border-border rounded-lg bg-background"
-                    placeholder="Smith"
+                  
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-card-foreground">Email Address</FormLabel>
+                        <FormControl>
+                          <input 
+                            {...field}
+                            type="email" 
+                            className="w-full p-3 border border-border rounded-lg bg-background"
+                            placeholder="john@example.com"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">Phone Number</label>
-                <input 
-                  type="tel" 
-                  className="w-full p-3 border border-border rounded-lg bg-background"
-                  placeholder="(555) 123-4567"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">Email Address</label>
-                <input 
-                  type="email" 
-                  className="w-full p-3 border border-border rounded-lg bg-background"
-                  placeholder="john@example.com"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">Property Address</label>
-                <input 
-                  type="text" 
-                  className="w-full p-3 border border-border rounded-lg bg-background"
-                  placeholder="123 Main St, City, TX 12345"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">Message (Optional)</label>
-                <textarea 
-                  className="w-full p-3 border border-border rounded-lg bg-background h-24 resize-none"
-                  placeholder="Tell us about your security needs..."
-                ></textarea>
-              </div>
-              
-              <Button variant="hero" className="w-full py-3">
-                Get My Free Quote Now
-              </Button>
+                  
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-card-foreground">Property Address</FormLabel>
+                        <FormControl>
+                          <input 
+                            {...field}
+                            type="text" 
+                            className="w-full p-3 border border-border rounded-lg bg-background"
+                            placeholder="123 Main St, City, TX 12345"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-card-foreground">Message (Optional)</FormLabel>
+                        <FormControl>
+                          <textarea 
+                            {...field}
+                            className="w-full p-3 border border-border rounded-lg bg-background h-24 resize-none"
+                            placeholder="Tell us about your security needs..."
+                            maxLength={500}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        {field.value && (
+                          <p className="text-xs text-muted-foreground">
+                            {field.value.length}/500 characters
+                          </p>
+                        )}
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button type="submit" variant="hero" className="w-full py-3">
+                    Get My Free Quote Now
+                  </Button>
+                </form>
+              </Form>
               
               <p className="text-xs text-muted-foreground text-center">
                 By submitting this form, you agree to receive communications from Security One Inc. No spam, unsubscribe anytime.

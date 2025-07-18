@@ -1,8 +1,36 @@
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Shield, CheckCircle, Star } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import heroImage from "@/assets/hero-security.jpg";
 
+const instantQuoteSchema = z.object({
+  propertyType: z.string().min(1, "Please select a property type"),
+  squareFootage: z.string().min(1, "Please select square footage"),
+  zipCode: z.string()
+    .min(5, "ZIP code must be at least 5 digits")
+    .max(5, "ZIP code must be exactly 5 digits")
+    .regex(/^\d{5}$/, "ZIP code must contain only numbers")
+});
+
 export const Hero = () => {
+  const form = useForm<z.infer<typeof instantQuoteSchema>>({
+    resolver: zodResolver(instantQuoteSchema),
+    defaultValues: {
+      propertyType: "",
+      squareFootage: "",
+      zipCode: "",
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof instantQuoteSchema>) => {
+    console.log("Quote form submitted:", data);
+    // Handle form submission
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-hero py-20 lg:py-32">
       <div className="absolute inset-0 bg-black/20"></div>
@@ -72,39 +100,80 @@ export const Hero = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">Property Type</label>
-                    <select className="w-full p-3 border border-border rounded-lg bg-background">
-                      <option>Residential Home</option>
-                      <option>Business/Commercial</option>
-                      <option>Apartment/Condo</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">Square Footage</label>
-                    <select className="w-full p-3 border border-border rounded-lg bg-background">
-                      <option>Under 1,500 sq ft</option>
-                      <option>1,500 - 2,500 sq ft</option>
-                      <option>2,500 - 4,000 sq ft</option>
-                      <option>Over 4,000 sq ft</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">ZIP Code</label>
-                    <input 
-                      type="text" 
-                      placeholder="Enter ZIP code"
-                      className="w-full p-3 border border-border rounded-lg bg-background"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="propertyType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-card-foreground">Property Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full p-3 border border-border rounded-lg bg-background">
+                                <SelectValue placeholder="Select property type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="residential">Residential Home</SelectItem>
+                              <SelectItem value="business">Business/Commercial</SelectItem>
+                              <SelectItem value="apartment">Apartment/Condo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <Button variant="hero" className="w-full py-3">
-                    Get My Free Quote
-                  </Button>
-                </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="squareFootage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-card-foreground">Square Footage</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full p-3 border border-border rounded-lg bg-background">
+                                <SelectValue placeholder="Select square footage" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="under-1500">Under 1,500 sq ft</SelectItem>
+                              <SelectItem value="1500-2500">1,500 - 2,500 sq ft</SelectItem>
+                              <SelectItem value="2500-4000">2,500 - 4,000 sq ft</SelectItem>
+                              <SelectItem value="over-4000">Over 4,000 sq ft</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="zipCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-card-foreground">ZIP Code</FormLabel>
+                          <FormControl>
+                            <input 
+                              {...field}
+                              type="text" 
+                              placeholder="Enter ZIP code"
+                              className="w-full p-3 border border-border rounded-lg bg-background"
+                              maxLength={5}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <Button type="submit" variant="hero" className="w-full py-3">
+                      Get My Free Quote
+                    </Button>
+                  </form>
+                </Form>
                 
                 <p className="text-xs text-muted-foreground mt-4 text-center">
                   No obligation • No spam • Instant results
